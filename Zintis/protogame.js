@@ -8,6 +8,7 @@ var words = [];
 var time = [];
 var counter = 0;
 
+//start the game - makes some words and calls up the starting functions.
 fs.readFile('./string.txt', "utf-8", (err, data) => {
 
     if (err) throw err;
@@ -24,6 +25,7 @@ fs.readFile('./string.txt', "utf-8", (err, data) => {
 	iterate();
 });
 
+// takes a string of words and spaces and turns it into an array
 function stringTextBreaker(x){
 
 	var tempwordholder = "";
@@ -48,6 +50,7 @@ function beginGame(){
 
 }
 
+//this is the timer. every x seconds it counts town the word's timer, makes a new word, and logs the gamestate
 function iterate(){
 	setInterval(function(){ 
 
@@ -57,12 +60,14 @@ function iterate(){
 	}, 4000);
 }
 
+//randomly plucks word from wordlist, adds to the appropriate arrays
 function newWord(){
 	var randomTargetWord = Math.floor(Math.random() * wordsArray.length);
 	words.push(wordsArray[randomTargetWord]);
 	time.push(4);
 }
 
+//prints out the gamestate for the player
 function gameStateLog(){
 	logger();
 	for (x=words.length-1;x>=0;x--){
@@ -71,6 +76,7 @@ function gameStateLog(){
 	logger();
 }
 
+//this is a recursive function which checks if your word is in an array, deletes it if it is, and starts itself anew
 function wordEntry(){
 	prompt.get(['userWord'],function(err, result){
 		var da = words.indexOf(result.userWord);
@@ -83,6 +89,7 @@ function wordEntry(){
 	});
 }
 
+// every x seconds it ticks down the timer array and deletes words that have 0 seconds on the timer
 function countDown(){
 
 	for(x=0;x<time.length;x++){
@@ -97,12 +104,14 @@ function countDown(){
 	}
 }
 
+//just combining two functions into one, cuts out entries from the array
 function spliceTimeWord(x){
 	time.splice(x, 1);
 	words.splice(x, 1);
 
 }
 
+//just makes the console easier to read
 function logger(){
 	console.log("==============================");
 }
