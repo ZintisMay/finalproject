@@ -102,7 +102,6 @@ function lookForWord(){
 function switchPush(k){
 
 	// wordsDivided[k.length] += " "+k;
-
 	wordArray[k.length].push(k);
 
 }
