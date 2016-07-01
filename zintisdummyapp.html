@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+	<script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
+</head>
+<body>
+
+
+Name:<input id="nameInput">Room:<input id="roomInput">User:<input id="userAccount">
+<button id="joinbutton">Join</button>
+<br><br><br>
+Email:<input id="email">Password:<input id="password">
+<button id="userbutton">Join</button>
+<br><br><br>
+
+<h1>Users:</h1>
+<table class="user"></table>
+<h1>Game Room:</h1>
+<div class="game room"></div>
+<h1>User A:</h1>
+<div class="userA"></div>
+<h1>User B:</h1>
+<div class="userB"></div>
+
+<h1>Connection?:</h1><div class="connection"></div>
+
+
+<script type="text/javascript">
+	
+	var FBdata = new Firebase("https://zintisdummyapp.firebaseio.com/");
+
+//this takes whatevers in the input fields a ships an object off to firebase
+	$("#joinbutton").on('click', function(){
+		
+		var a = $("#nameInput").val();
+		var b = $("#roomInput").val();
+		var b = $("#userAccount").val();
+		console.log(a);
+		console.log(b);
+		// $(".user").html("bob");
+
+		FBdata.push({a : {name: a, room: b}});
+	});
+
+	$("#userbutton").on('click', function(){
+		
+		var a = $("#email").val();
+		var b = $("#password").val();
+
+		console.log(a);
+		console.log(b);
+		// $(".user").html("bob");
+
+		FBdata.createUser({
+			email: a,
+			password: b
+		}, function(error, userData){
+			if(error){
+				switch(error.code){
+					case "EMAIL_TAKEN":
+					console.log("emailused");
+					break;
+					case "INVALID_EMAIL":
+					console.log("invalid");
+					break;
+					default:
+					console.log("error creating user:", error);
+				}
+			}else{
+				console.log("success: ", userData.uid)
+			}
+		});
+	});
+
+//this a) loads data when page loads b) loads data when a new entry is made
+//it assembles the firebase data and makes a row, then appends the row to the table
+	FBdata.on('child_added', function(childSnapshot, prevChildKey){
+		console.log("csnap", childSnapshot.val(), prevChildKey);
+
+		var newTR = "<tr>";
+		var nameTD = "<td>" + childSnapshot.val().name + "</td>";
+		var roomTD = "<td>" + childSnapshot.val().room + "</td>";
+		newTR += nameTD;
+		newTR += roomTD;
+		newTR += "</tr>";
+
+		$('.user').append(newTR);
+	});
+
+	FBdata.on("child_changed", function(snapshot){
+		console.log(snapshot);
+
+
+	}, function (errorObject){
+		console.log("fail, errorobject code:" + errorobject.code);
+	});
+
+</script>
+
+</body>
+</html>
