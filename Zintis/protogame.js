@@ -1,14 +1,35 @@
+// Ok basic idea:
+
+// You get some words, put them in an array. 
+//show a game menu, 1: start game 2: high scores 3: exit
+// 1:
+// Game begins 
+// user prompt starts so user can enter words, when they do they are moved out of a temporary array. 
+// interval starts so that words are automatically randomly pulled from source array and into temporary array. a corresponding "time" array holds a counter for the word in the same position.
+//every second the game ticks down every word that is still there, if one gets to 0, you lose a point. when you lose 5 points, game exits
+
+// there are 2 known bugs, let me know if they end up hindering you 
+
+/////////////////////////////////////////////////////////////////////////////
+
+//normal requires
 var prompt = require('prompt');
 prompt.start();
 var fs = require('fs');
+
+//these hold the words being drawn randomly from. The "huge string" is used when reading from a txt file"
 var wordsArray = [];
 var hugeString = "";
 
+//words are the active words you are using, they correllate to the "time" array. So words[0] is made when time[0] is made. They can probably be in a single object instead, so game = [{word:bob,time:5}, etc...]
 var words = [];
 var time = [];
-var counter = 0;
+
+//points are added when you type a word
 var points = 0;
+//losegame determines when you lose (when it hits 5), and triggers if a word's "time" is at 0 when the timer goes off 
 var loseGame = 0;
+//this is the scores object, for local purposes. it'll be phased out when we implement firebase
 var highScores = [{name: "Zintis",score: 100}];
 
 
@@ -17,16 +38,18 @@ var highScores = [{name: "Zintis",score: 100}];
 fs.readFile('./string.txt', "utf-8", (err, data) => {
 
     if (err) throw err;
-
+    //grabs the string.txt data
     hugeString = data;
-	
+    //makes it an array
 	stringTextBreaker(hugeString);
-
+	//plucks a word from array (unnecessary)
 	newWord();
+	//unnecessary
 	console.log(wordsArray.length);
 	console.log(words);
 	console.log(time);
 
+	//starts the game cycle
 	beginGame();
 });
 
@@ -51,6 +74,7 @@ function stringTextBreaker(x){
 	}
 }
 
+// this is the menu function
 function beginGame(){
 
 	points = 0;
@@ -64,17 +88,23 @@ function beginGame(){
 	
 	prompt.get(['userInput'],function(err, result){
 		
-
+		//this deals with the menu results
 		if (result.userInput == 1){
 			
+			//it starts the player prompt; they can now enter words
 			wordEntry();
+			//I think this line is meant to clear a bug where the previous userInput value is stored between uses.
 			result.userInput = 0;
+			//this is the loop. it has a problem. if you set the loop anonymously, it will run forever. If you declare it as a variable with a name, you can do a "clearInterval('name')" and make it stop running. The game has a bug that when you lose and the game tries to restart it just keeps running. I think it is because the interval function is out of scope with the clear interval function. Let us know if you have problems with this 
 			var iterate = setInterval(function(){ 
+				//ticks the words' time value down
 				countDown();
+				//grabs a new word
 				newWord();
+				//console logs the gamestate
 				gameStateLog();	
 			}, 1000);
-		
+		//this just shows "high scores", bring you back to menu
 		}else if (result.userInput == 2){
 			result.userInput = 0;
 			logger();		
@@ -83,7 +113,7 @@ function beginGame(){
 				console.log(highScores[x].name, ": ", highScores[x].score);
 			}
 			beginGame();
-		
+		//quits the game
 		}else if (result.userInput == 3){
 			result.userInput = 0;
 			logger();
@@ -98,8 +128,6 @@ function beginGame(){
 
 }
 
-//this is the timer. every x seconds it counts town the word's timer, makes a new word, and logs the gamestate
-
 
 
 //randomly plucks word from wordlist, adds to the appropriate arrays
@@ -109,7 +137,7 @@ function newWord(){
 	time.push(4);
 }
 
-//prints out the gamestate for the player
+//prints out the gamestate for the player in the console
 function gameStateLog(){
 	logger();
 	for (x=5;x>=0;x--){
@@ -118,7 +146,6 @@ function gameStateLog(){
 		}else{
 			console.log("BLANK");
 		}
-
 	}
 	logger();
 }
@@ -132,7 +159,6 @@ function wordEntry(){
 			spliceTimeWord(da);
 			points++;
 		}
-
 		wordEntry();
 	});
 }
