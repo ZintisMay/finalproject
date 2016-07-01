@@ -9,6 +9,7 @@ var time = [];
 var counter = 0;
 var points = 0;
 var loseGame = 0;
+var highScores = [{name: "Zintis",score: 100}];
 
 
 
@@ -51,6 +52,8 @@ function stringTextBreaker(x){
 }
 
 function beginGame(){
+
+	points = 0;
 	logger();
 	console.log("Welcome to NodeType");
 	logger();
@@ -65,6 +68,7 @@ function beginGame(){
 		if (result.userInput == 1){
 			
 			wordEntry();
+			result.userInput = 0;
 			var iterate = setInterval(function(){ 
 				countDown();
 				newWord();
@@ -72,7 +76,7 @@ function beginGame(){
 			}, 1000);
 		
 		}else if (result.userInput == 2){
-			
+			result.userInput = 0;
 			logger();		
 			for (x=0;x<highScores.length;x++){
 
@@ -81,6 +85,7 @@ function beginGame(){
 			beginGame();
 		
 		}else if (result.userInput == 3){
+			result.userInput = 0;
 			logger();
 			console.log("thanks for playing!");
 			logger();
@@ -125,6 +130,7 @@ function wordEntry(){
 		
 		if (da>=0){
 			spliceTimeWord(da);
+			points++;
 		}
 
 		wordEntry();
@@ -145,8 +151,8 @@ function countDown(){
 
 			if (loseGame == 5) {
 
-				clearInterval(iterate);
-				
+				clearInterval("iterate");
+				console.log("Enter your Name");
 				prompt.get(['userName'],function(err, result){
 
 					highScores.push({name: result.userName ,score: points});
@@ -154,9 +160,10 @@ function countDown(){
 				});
 
 				logger();
-				console.log("YOU LOSE, YOU HAD ", point, " POINTS!");
+				console.log("YOU LOSE, YOU HAD ", points, " POINTS!");
+
 				logger();
-				beginGame();
+				// beginGame();
 			}
 
 		}
