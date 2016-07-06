@@ -56,6 +56,7 @@
   height: 3px;
   background: transparent;
   box-shadow: 588px 1476px #FFF , 1354px 1321px #FFF , 1712px 336px #FFF , 1001px 1175px #FFF , 33px 1840px #FFF , 1579px 944px #FFF , 879px 930px #FFF , 1172px 1809px #FFF , 663px 1353px #FFF , 442px 489px #FFF , 1164px 466px #FFF , 164px 118px #FFF , 810px 1404px #FFF , 1937px 1740px #FFF , 1914px 442px #FFF , 37px 134px #FFF , 1962px 1158px #FFF , 1996px 1875px #FFF , 345px 770px #FFF , 848px 1772px #FFF , 673px 681px #FFF , 1322px 1995px #FFF , 1194px 224px #FFF , 950px 1282px #FFF , 578px 188px #FFF , 1620px 1814px #FFF , 1114px 1891px #FFF , 585px 968px #FFF , 1830px 1927px #FFF , 809px 388px #FFF , 761px 764px #FFF , 450px 887px #FFF , 1854px 670px #FFF , 1156px 475px #FFF , 640px 743px #FFF , 349px 695px #FFF , 1570px 989px #FFF , 1999px 963px #FFF , 681px 206px #FFF , 1223px 770px #FFF , 515px 454px #FFF , 1079px 576px #FFF , 501px 708px #FFF , 630px 1510px #FFF , 1825px 443px #FFF , 1789px 49px #FFF , 865px 1188px #FFF , 1356px 1587px #FFF , 532px 1922px #FFF , 1326px 67px #FFF , 1420px 1234px #FFF , 820px 141px #FFF , 689px 1319px #FFF , 1784px 402px #FFF , 1349px 840px #FFF , 61px 1469px #FFF , 681px 226px #FFF , 294px 295px #FFF , 1184px 40px #FFF , 51px 1599px #FFF , 161px 1154px #FFF , 766px 43px #FFF , 1205px 30px #FFF , 1032px 658px #FFF , 1682px 1012px #FFF , 254px 312px #FFF , 703px 986px #FFF , 962px 1836px #FFF , 1372px 1900px #FFF , 405px 70px #FFF , 1011px 235px #FFF , 1127px 1536px #FFF , 677px 1753px #FFF , 723px 1181px #FFF , 568px 1786px #FFF , 1644px 1693px #FFF , 1584px 1478px #FFF , 1914px 50
+}
 html {
   height: 100%;
   background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
@@ -155,13 +156,37 @@ html {
   width:50px;
 }
 .wordTargetDetails{
-    width: 100px;
+    width: 200px;
     height: 50px;
     /*background-color: red;*/
     color: white;
     font-weight: bold;
     position: relative;
     z-index:1;
+}
+.wordTargetAnimate1 {
+
+    -webkit-animation: mymove 1s; /* Chrome, Safari, Opera */
+    animation: mymove 1s;
+    animation-direction:reverse;
+}
+.wordTargetAnimate2 {
+
+    -webkit-animation: mymove 2s; /* Chrome, Safari, Opera */
+    animation: mymove 2s;
+    animation-direction:reverse;
+}
+.wordTargetAnimate3 {
+
+    -webkit-animation: mymove 3s; /* Chrome, Safari, Opera */
+    animation: mymove 3s;
+    animation-direction:reverse;
+}
+.wordTargetAnimate4 {
+
+    -webkit-animation: mymove 4s; /* Chrome, Safari, Opera */
+    animation: mymove 4s;
+    animation-direction:reverse;
 }
 .wordTargetAnimate5 {
 
@@ -197,6 +222,36 @@ html {
 
     -webkit-animation: mymove 10s; /* Chrome, Safari, Opera */
     animation: mymove 10s;
+    animation-direction:reverse;
+}
+.wordTargetAnimate11 {
+
+    -webkit-animation: mymove 11s; /* Chrome, Safari, Opera */
+    animation: mymove 11s;
+    animation-direction:reverse;
+}
+.wordTargetAnimate12 {
+
+    -webkit-animation: mymove 12s; /* Chrome, Safari, Opera */
+    animation: mymove 12s;
+    animation-direction:reverse;
+}
+.wordTargetAnimate13 {
+
+    -webkit-animation: mymove 13s; /* Chrome, Safari, Opera */
+    animation: mymove 13s;
+    animation-direction:reverse;
+}
+.wordTargetAnimate14 {
+
+    -webkit-animation: mymove 14s; /* Chrome, Safari, Opera */
+    animation: mymove 14s;
+    animation-direction:reverse;
+}
+.wordTargetAnimate15 {
+
+    -webkit-animation: mymove 15s; /* Chrome, Safari, Opera */
+    animation: mymove 15s;
     animation-direction:reverse;
 }
 

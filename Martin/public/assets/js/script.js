@@ -1,5 +1,26 @@
 var $SearchField;
 
+//zzzzzzzzzzzzzzzzzzzzzz
+//the various buckets of words
+var wordsObjectArray = []; //word bank
+var wordsActiveArray = []; //words on screen
+var wordsInactiveArray = []; //used words
+///experimental dynmic div creator
+var wordRowIncrement = 1; // is the ticker used to make words in different rows
+var wordRowIncrementArray = []; //is the first countdown ticker
+var wordRowIncrementArray2 = []; //is the second countdown ticker
+
+var tempWordIndex;
+
+var gameState = {
+	go: true,
+	words: 0,
+	points: 0,
+	missedWords: 0
+}
+
+//zzzzzzzzzzzzzzzzzzzzzzzz
+
 //sets up the jquery targets
 $(document).ready(function(){
 	$SearchField = $('#query');		// 	the text field. This is where the game is played.
@@ -14,58 +35,93 @@ $(document).ready(function(){
 	});
 
 //zzzzzzzzzzzzzzzzzzzzzzzz
+
+//create new divs button
 	$('button').click(function(){
 
-		console.log("pushMe");
+		// console.log("pushMe");
 
+		// this takes the contents of the input box
 		var inputContents = $('.box').val();
 
-		console.log(inputContents, inputContents.length);
+		// console.log(inputContents, inputContents.length);
 
-		//this line creates the dynamic div that contains the word, and maybe an image
-
-			$('#row' + wordRowIncrement).html('<div class="wordTarget wordTargetDetails wordTargetAnimate' +(inputContents.length+4) +' word-x1  div6 white"><img width="25" height="25" src="../../public/assets/images/space_invader.png"> '+inputContents+'</div>');
-
-
-
-			wordRowIncrementArray.push(wordRowIncrement);
-
-
-			//this is the timer that removes the div, and replaces it with an explosion
-			setTimeout(function(){
-
-				console.log("wordRowIncrementArray",wordRowIncrementArray);		
-				//this creates the explosion div
-				$('#row' + wordRowIncrementArray[0]).html('<img class="explosion"'+wordRowIncrementArray2+'" src="../../public/assets/images/explosion.gif">');
-				
-				wordRowIncrementArray2.push(wordRowIncrementArray[0]);
-				wordRowIncrementArray.splice(0,1);
-
-				console.log("wordRowIncrementArray",wordRowIncrementArray);
-				console.log("wordRowIncrementArray2",wordRowIncrementArray2);
-
-				//this ends the explosion div
-				setTimeout(function(){
-					$('#row' + wordRowIncrementArray2[0]).html("");
-					wordRowIncrementArray2.splice(0,1);
-					console.log(wordRowIncrementArray);
-					console.log(wordRowIncrementArray2);
-				}, 1000);
-
-			}, (inputContents.length+4)*1000);
-
-
-			wordRowIncrement++;
-			if (wordRowIncrement >= 7){wordRowIncrement = 1;}
-
-		// }
+		//contains the new rod lifecycle
+		newWordLifeCycle(inputContents);
 
 	});
 
-	console.dir(window);
-//zzzzzzzzzzzzzzzzzzzzzzzz
+});//end document.ready
 
-});
+//this starts a recursive function which selects words, checks their lenths, and recalls itself relative to the length of the last word selected
+function gameLoop(xxyy){
+	if(gameState.go==true){
+		var gameLoopInterval = setInterval(function(){
+			if(gameState.go==false){clearInterval(gameLoopInterval);}else{
+							selectWord(wordsObjectArray, wordsActiveArray, 1, wordsInactiveArray, 1);
+			var tempWordLength = wordsActiveArray[tempWordIndex].length;
+			gameLoop(tempWordLength);
+			}	
+		}, 2000);
+	}
+	
+}
+
+//this function will contain the new word lifecycle
+function newWordLifeCycle(inputContents){
+
+	//this line creates the dynamic div that contains the word, and maybe an image
+	$('#row' + wordRowIncrement).html('<div class="wordTarget wordTargetDetails wordTargetAnimate' +(inputContents.length) +' word-x1  div6 white"><img width="25" height="25" src="../../public/assets/images/space_invader.png"> '+inputContents+'</div>');
+
+	//this keeps track of which rows have animations
+	wordRowIncrementArray.push(wordRowIncrement);
+
+	//this is the timer that removes the div, and replaces it with an explosion
+	setTimeout(function(){
+
+		// console.log("wordRowIncrementArray",wordRowIncrementArray);	
+
+		//this creates the explosion div
+		$('#row' + wordRowIncrementArray[0]).html('<img class="explosion"'+wordRowIncrementArray2+'" src="../../public/assets/images/explosion.gif">');
+		
+		//this moves the incrementer to the second counter, then removes the first counter. So that the animations end at the right times
+		wordRowIncrementArray2.push(wordRowIncrementArray[0]);
+		wordRowIncrementArray.splice(0,1);
+
+		// console.log("wordRowIncrementArray",wordRowIncrementArray);
+		// console.log("wordRowIncrementArray2",wordRowIncrementArray2);
+
+		//this adds to the missedwords counter, at @5 will shut down the game
+		gameState.missedWords++
+		if (gameState.missedWords ==10){
+			gameState.go=false;
+			for(u = 1; u < 13; u++){
+				$("#row" + u).html("YOU LOSE");
+			}
+		}
+
+		//this ends the explosion div
+		setTimeout(function(){
+
+			//blanks the row
+			$('#row' + wordRowIncrementArray2[0]).html("");
+
+			//removes the counter
+			wordRowIncrementArray2.splice(0,1);
+
+			// console.log(wordRowIncrementArray);
+			// console.log(wordRowIncrementArray2);
+		}, 500);
+
+		//this sets the timer to the length of the word + 4. So a 1 letter word takes 5 seconds to expire, whereas a 7 letter word would take 11.
+	}, (inputContents.length)*1000);
+
+	//this is the counter for the number of word rows
+	wordRowIncrement++;
+	if (wordRowIncrement >= 13){wordRowIncrement = 1;}
+}
+
+//zzzzzzzzzzzzzzzzzzzzzzzz
 
 // removes words
 function wordGun(node){
@@ -94,6 +150,7 @@ function wordGun(node){
 		$targets.each(function(){
 			//gets the text from the targets
 			var targetWord = $(this).text();
+			console.log("targetWord", targetWord);
 			//look for spaces in the text, if there is a group of them, make them blank???
 			var text = $(this).text().replace(/\s+/g, ' ');
 			// checks how many characters were selected?
@@ -151,9 +208,7 @@ console.log("gamelogic+");
 
 var URL = "http://api.wordnik.com:80/v4/words.json/randomWords?hasDictionaryDef=true&excludePartOfSpeech=proper-noun&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=3&maxLength=10&limit=1000&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5"
 
-var wordsObjectArray = [];
-var wordsActiveArray = [];
-var wordsInactiveArray = [];
+
 
 $.ajax({url: URL, success: function(result){
 	// console.log('result', result, typeof result, result[0]);
@@ -165,120 +220,33 @@ $.ajax({url: URL, success: function(result){
 		  	wordsObjectArray.push(result[zzz].word);
 		}
 	  }
-	for(q=0;q<100;q++){
-		newWord(wordsObjectArray, wordsActiveArray, 5, wordsInactiveArray);
-	}
+
+	// selectWord(wordsObjectArray, wordsActiveArray, 5, wordsInactiveArray, 5);
+
+	gameLoop(1);
+
 	console.log(wordsObjectArray);
 	// console.log(wordsObjectArray, wordsActiveArray);
 }});
-
-$()
-
-// $.get(URL, function (error, response, body) {
-//   if (!error && response.statusCode == 200) {
-//     console.log(body);
-//     // console.log(response);
-//   }
-// 	console.log(typeof body);
-// 	// console.log(typeof response);
-// 	var jsonbody = JSON.parse(body);
-
-// 	console.log(typeof jsonbody);
-
-// 	console.log(jsonbody[0]);
-
-
-//   for(zzz = 0;zzz < jsonbody.length;zzz++){
-//   	if(jsonbody[zzz].word[0] >= 'a' && jsonbody[zzz].word[0] <= 'z' && jsonbody[zzz].word.indexOf('-') == -1 && jsonbody[zzz].word.indexOf("'") == -1 ){
-// 	  	wordObjectArray.push(jsonbody[zzz].word);
-//   	}
-//   }
-  
-// 	console.log(wordObjectArray);
-// 	console.log(wordObjectArray.length);
-
-// 	// newWord(wordObjectArray, wordsUsedArray, 5);
-// 	console.log(wordsUsedArray);
-
-// 	for(q=0;q<5;q++){
-// 		newWord(wordObjectArray, wordsActiveArray, 5, wordsInactiveArray);
-// 	}
-
-
-// });
-
-
-
-//randomly plucks word from wordlist, adds to the appropriate arrays
-// pulls from sss, into jjj, time ppp
-
-
-
-
-// var wordBank = ["flank", "bank", "tank", "rank", "dank"];
-
-
-// var gameState = {
-// 	loseGame: false,
-// 	missedWords: 0
-// }
-
-// var gameClock = setInterval(
-// 	function(){
-// 		countDown(); 
-
-// 		if(gameState.loseGame == true){
-// 			clearInterval(gameClock);
-// 			console.log("You Lose");
-// 			}
-// 		newWord(5);
-// 	}, 1000);
-
-// function countDown () {
-// 	for(x=0;x<wordObjectArray.length;x++){
-
-// 		wordObjectArray[x].num -= 1;
-
-// 		if (wordObjectArray[x].num == 0){
-
-// 			wordObjectArray.splice(x, 1);
-// 			gameState.missedWords += 1;
-
-// 		}
-
-// 		if(gameState.missedWords >= 3){gameState.loseGame = true;}
-// 		if (x==wordObjectArray.length-1){
-// 			logger();
-// 			console.log(wordObjectArray);
-// 		}
-// 	}
-// }
-
-// function newWord(rrr){
-// 	var randomTargetWord = Math.floor(Math.random() * wordBank.length);
-// 	wordObjectArray.push({word: wordBank[randomTargetWord], num: rrr});
-// }
-
-// function logger(){
-// 	console.log("==============================");
-// }
 
 //zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
 
 console.log("gamefunctions+");
 
-//bank of words, targetarray, timer length,used word array
-function newWord(sss, jjj, ppp, kkk){
+//bank of words, targetarray, timer length, used word array, number of words to select
+function selectWord(sss, jjj, ppp, kkk, yyy){
 
-	var xxx = Math.floor(Math.random() * sss.length);
-	
+	for(q=0;q<yyy;q++){
+		var xxx = Math.floor(Math.random() * sss.length);
+
+		tempWordIndex = xxx;
 
 		jjj.push({name: sss[xxx], num: ppp});
 		sss.splice(xxx, 1);
 		// console.log(jjj[jjj.length-1]);
 		// console.log(sss.indexOf(jjj[jjj.length-1]));
-
-
+		newWordLifeCycle(sss[xxx]);
+	}
 }
 
 // every x seconds it ticks down the timer array and deletes words that have 0 seconds on the timer
@@ -341,10 +309,7 @@ function removeWordFromArray(yy, zz){
 	zz.splice(removeObject, 1);
 }
 
-///experimental dynmic div creator
-var wordRowIncrement = 1;
-var wordRowIncrementArray = [];
-var wordRowIncrementArray2 = [];
+
 
 // $(document).ready(function() {
 function readyfunction(){  
